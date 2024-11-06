@@ -1,0 +1,178 @@
+-- Step 1: Create the Database
+CREATE DATABASE UniversityManagementSystem;
+USE UniversityManagementSystem;
+
+-- Step 2: Create the login table
+CREATE TABLE login (
+    username VARCHAR(255),
+    password VARCHAR(255)
+);
+
+-- Insert initial values into login table
+INSERT INTO login VALUES ('admin', 'admin');
+
+-- Step 3: Create the Department table
+CREATE TABLE Department (
+    departmentId INT PRIMARY KEY AUTO_INCREMENT,
+    departmentName VARCHAR(100) NOT NULL,
+    headOfDepartment VARCHAR(100),
+    location VARCHAR(100)
+);
+
+-- Step 4: Create the Student table
+CREATE TABLE Student (
+    studentId INT PRIMARY KEY AUTO_INCREMENT,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    dob DATE NOT NULL,
+    gender VARCHAR(10),
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(15),
+    address VARCHAR(255),
+    enrollmentDate DATE,
+    departmentId INT,
+    FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
+);
+
+-- Step 5: Create the Faculty table
+CREATE TABLE Faculty (
+    facultyId INT PRIMARY KEY AUTO_INCREMENT,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(15),
+    address VARCHAR(255),
+    departmentId INT,
+    hireDate DATE,
+    role VARCHAR(50),
+    FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
+);
+
+-- Step 6: Create the Course table
+CREATE TABLE Course (
+    courseId INT PRIMARY KEY AUTO_INCREMENT,
+    courseName VARCHAR(100) NOT NULL,
+    courseCode VARCHAR(10) UNIQUE NOT NULL,
+    credits INT,
+    departmentId INT,
+    FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
+);
+
+-- Step 7: Create the Enrollment table (Many-to-Many relationship between Student and Course)
+CREATE TABLE Enrollment (
+    enrollmentId INT PRIMARY KEY AUTO_INCREMENT,
+    studentId INT,
+    courseId INT,
+    semester VARCHAR(20),
+    year INT,
+    status VARCHAR(20),
+    FOREIGN KEY (studentId) REFERENCES Student(studentId),
+    FOREIGN KEY (courseId) REFERENCES Course(courseId)
+);
+
+-- Step 8: Create the Grade table
+CREATE TABLE Grade (
+    gradeId INT PRIMARY KEY AUTO_INCREMENT,
+    studentId INT,
+    courseId INT,
+    semester VARCHAR(20),
+    year INT,
+    grade CHAR(2),
+    FOREIGN KEY (studentId) REFERENCES Student(studentId),
+    FOREIGN KEY (courseId) REFERENCES Course(courseId)
+);
+
+-- Step 9: Create the Schedule table
+CREATE TABLE Schedule (
+    scheduleId INT PRIMARY KEY AUTO_INCREMENT,
+    courseId INT,
+    facultyId INT,
+    day VARCHAR(20),
+    startTime TIME,
+    endTime TIME,
+    location VARCHAR(100),
+    FOREIGN KEY (courseId) REFERENCES Course(courseId),
+    FOREIGN KEY (facultyId) REFERENCES Faculty(facultyId)
+);
+
+-- Step 10: Create the Assignment table
+CREATE TABLE Assignment (
+    assignmentId INT PRIMARY KEY AUTO_INCREMENT,
+    courseId INT,
+    title VARCHAR(100),
+    description TEXT,
+    dueDate DATE,
+    FOREIGN KEY (courseId) REFERENCES Course(courseId)
+);
+
+-- Step 11: Create the Exam table
+CREATE TABLE Exam (
+    examId INT PRIMARY KEY AUTO_INCREMENT,
+    courseId INT,
+    examDate DATE,
+    duration INT,
+    type VARCHAR(20),
+    FOREIGN KEY (courseId) REFERENCES Course(courseId)
+);
+
+-- Step 12: Create the Fee table
+CREATE TABLE Fee (
+    feeId INT PRIMARY KEY AUTO_INCREMENT,
+    studentId INT,
+    amount DECIMAL(10, 2),
+    dueDate DATE,
+    status VARCHAR(20),
+    FOREIGN KEY (studentId) REFERENCES Student(studentId)
+);
+
+-- Step 13: Create the Payment table
+CREATE TABLE Payment (
+    paymentId INT PRIMARY KEY AUTO_INCREMENT,
+    feeId INT,
+    paymentDate DATE,
+    amount DECIMAL(10, 2),
+    paymentMethod VARCHAR(20),
+    status VARCHAR(20),
+    FOREIGN KEY (feeId) REFERENCES Fee(feeId)
+);
+
+-- Step 14: Create the Event table
+CREATE TABLE Event (
+    eventId INT PRIMARY KEY AUTO_INCREMENT,
+    eventName VARCHAR(100),
+    eventDate DATE,
+    location VARCHAR(100),
+    description TEXT
+);
+
+-- Step 15: Create the LibraryBook table
+CREATE TABLE LibraryBook (
+    bookId INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(100),
+    author VARCHAR(100),
+    isbn VARCHAR(13) UNIQUE,
+    publicationYear INT,
+    availableCopies INT
+);
+
+-- Step 16: Create the Attendance table
+CREATE TABLE Attendance (
+    attendanceId INT PRIMARY KEY AUTO_INCREMENT,
+    studentId INT,
+    courseId INT,
+    date DATE,
+    status VARCHAR(20),
+    FOREIGN KEY (studentId) REFERENCES Student(studentId),
+    FOREIGN KEY (courseId) REFERENCES Course(courseId)
+);
+
+-- Step 17: Create the Result table
+CREATE TABLE Result (
+    resultId INT PRIMARY KEY AUTO_INCREMENT,
+    studentId INT,
+    semester VARCHAR(20),
+    year INT,
+    gpa DECIMAL(3, 2),
+    status VARCHAR(20),
+    FOREIGN KEY (studentId) REFERENCES Student(studentId)
+);
